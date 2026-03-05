@@ -65,6 +65,47 @@ This agent runs on:
 
 ---
 
+## Skills: openclaw-cli
+
+Skill path (this repo): `skills/openclaw-cli/`
+arifOS MCP tool: `query_openclaw` (live after next container rebuild)
+
+### What it exposes
+
+| Tool ID | CLI command | Available via |
+|---------|-------------|---------------|
+| `openclaw_get_health` | `openclaw health --json` | OpenClaw skill (inside container) |
+| `openclaw_get_status` | `openclaw status --json --all` | OpenClaw skill (inside container) |
+| `openclaw_list_models` | `openclaw models list --json` | OpenClaw skill (inside container) |
+| `openclaw_get_models_status` | `openclaw models status --json` | OpenClaw skill (inside container) |
+| `openclaw_channels_status` | `openclaw channels status --probe --json` | OpenClaw skill (inside container) |
+| `openclaw_memory_search` | `openclaw memory search <query>` | OpenClaw skill (inside container) |
+| `openclaw_gateway_status` | `openclaw gateway status --json` | OpenClaw skill (inside container) |
+
+### How to call via arifOS MCP
+
+```json
+{ "tool": "query_openclaw", "args": { "session_id": "<from anchor_session>", "action": "health" } }
+{ "tool": "query_openclaw", "args": { "session_id": "<from anchor_session>", "action": "status" } }
+```
+
+`action="health"` returns HTTP liveness + container state.
+`action="status"` adds config snapshot (model, bind, version — no secrets).
+
+### Why two layers
+
+OpenClaw's management API is WebSocket-only (custom protocol). The `query_openclaw`
+MCP tool uses the HTTP-observable subset (reachability + config file). Full CLI access
+(`models list`, `channels status`, etc.) requires the OpenClaw workspace skill running
+inside the container where the `openclaw` binary exists.
+
+### 888_HOLD boundary
+
+Out of scope for this skill — require human confirmation before execution:
+`gateway restart`, `config set`, `cron add/rm`, `channels add/remove`, `reset`, `uninstall`.
+
+---
+
 ## Related Repos
 
 | Repo | Role | Use when |
