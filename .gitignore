@@ -1,0 +1,6 @@
+.env
+secrets.*
+*.log
+memory/*
+node_modules/
+.DS_Store
