@@ -91,3 +91,28 @@ docker image prune -f --filter "dangling=true"
 ```
 
 *Run this skill on every session start to establish baseline. Alert Arif via Telegram if CRITICAL.*
+
+---
+
+## Telegram Alerts (when CRITICAL)
+
+```bash
+# Send alert to Arif via Telegram bot
+send_telegram_alert() {
+  local MESSAGE="$1"
+  if [ -n "${TELEGRAM_BOT_TOKEN:-}" ] && [ -n "${TELEGRAM_CHAT_ID:-}" ]; then
+    curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+      -d "chat_id=${TELEGRAM_CHAT_ID}" \
+      -d "text=⚠️ arifOS_bot: ${MESSAGE}" \
+      -d "parse_mode=Markdown" > /dev/null
+  fi
+}
+
+# Example alerts:
+# send_telegram_alert "🔴 arifosmcp_server UNHEALTHY — tools_loaded=$(curl ...)"
+# send_telegram_alert "💿 Disk ${DISK_PCT}% — run: docker builder prune -f"
+# send_telegram_alert "🧠 RAM critical — available: ${RAM_AVAIL}MiB"
+```
+
+**Note:** `TELEGRAM_CHAT_ID` is the numeric chat ID of Arif's chat with @arifOS_bot.
+To get it: message the bot, then check `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`

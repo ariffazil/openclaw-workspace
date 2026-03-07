@@ -1,119 +1,175 @@
-# TOOLS – Environment and Tool Rules
+# TOOLS – VPS Full Capability Map
+**Version:** 2026.03.07-EXEC-SEALED
 
 ---
 
-## Environment
+## 1. Tool Groups Now Active (profile: full)
 
-This agent runs on:
+| Group | Tools | Status |
+|-------|-------|--------|
+| `group:runtime` | exec, process, bash | ACTIVE |
+| `group:fs` | read, write, edit, apply_patch | ACTIVE |
+| `group:sessions` | sessions_list/history/send/spawn, session_status | ACTIVE |
+| `group:memory` | memory_search, memory_get | ACTIVE |
+| `group:web` | web_search, web_fetch | ACTIVE |
+| `group:ui` | browser (→ headless_browser:3000), canvas | ACTIVE |
+| `group:automation` | cron, gateway | ACTIVE |
+| `group:messaging` | message (Telegram live) | ACTIVE |
+| `group:nodes` | nodes | ACTIVE |
+| `group:openclaw` | all built-in tools | ACTIVE |
 
-- **Host:** `srv1325122.hstgr.cloud` (Hostinger VPS, Ubuntu)
-- **Network:** `arifos_trinity` Docker bridge (`10.0.10.0/24`)
-- **Compose file:** `/srv/arifOS/docker-compose.yml`
-- **Workspace mount:** `/opt/arifos/data/openclaw/workspace`
-
-### Available Infrastructure
-
-| Tool | Access | Status |
-|------|--------|--------|
-| arifOS MCP Server | `https://arifosmcp.arif-fazil.com/mcp` (Streamable HTTP) | LIVE |
-| Docker (via MCP or shell) | `arifosmcp_server` → docker.sock | LIVE |
-| Redis 7 | `redis://redis:6379` (internal) | LIVE |
-| PostgreSQL 16 | `localhost:5432` (arifos-internal) | LIVE |
-| Qdrant (vector memory) | `http://qdrant_memory:6333` (internal) | LIVE |
-| Ollama (LLM engine) | `http://ollama_engine:11434` (internal) | LIVE |
-| n8n (workflow) | `https://flow.arifosmcp.arif-fazil.com` | LIVE |
-| Prometheus | `http://arifos_prometheus:9090` (internal) | LIVE |
-| Grafana | `https://monitor.arifosmcp.arif-fazil.com` | LIVE |
-| Webhook CI/CD | `https://hook.arifosmcp.arif-fazil.com/hooks/deploy-arifos` | LIVE |
-
-### 333_APPS (on-host)
-
-| App | Path | Notes |
-|-----|------|-------|
-| Constitutional Visualizer | `/srv/arifOS/333_APPS/constitutional-visualizer/` | Served via arifosmcp |
+Browser is wired to: `http://headless_browser:3000` (Chromium/Browserless internal)
 
 ---
 
-## Tool Rules
+## 2. VPS Services — Internal Docker DNS
 
-1. **arifOS MCP is the primary interface.** Call tools via `https://arifosmcp.arif-fazil.com/mcp`. Use the 13 MCP tools as the default reasoning surface — not raw shell unless necessary.
+Network: `arifos_trinity` (10.0.10.0/24)
 
-2. **Always use the 000–999 mental model.** Before any non-trivial action:
-   - Anchor (000): What is the session context?
-   - Reason (111–333): What do I actually know?
-   - Integrate (444–666): What are the constraints and values at play?
-   - Forge (888): What is the output?
-   - Seal (999): Is this worth persisting to memory?
-
-3. **Floors before tools.** For any risky action, name which floors apply before executing:
-   - Docker changes → F1, F11, F13
-   - File writes → F1, F4
-   - External calls → F2, F12
-   - Secret handling → F11, F13
-
-4. **888_HOLD triggers** (always pause and confirm with Arif):
-   - Container restart or rebuild
-   - Compose file edits
-   - Mass file operations (>10 files)
-   - Credential or token handling
-   - Git history modification
-   - Database migrations
-
-5. **Prometheus and Grafana are read-only for the agent.** Never modify scrape configs or dashboards without 888_HOLD.
-
-6. **Qdrant is long-term memory.** Write to it only via `recall_memory` and `seal_vault` MCP tools — not direct HTTP.
+| Service | Internal URL | External URL | Notes |
+|---------|-------------|--------------|-------|
+| arifOS MCP | `http://arifosmcp_server:8080` | `https://arifosmcp.arif-fazil.com` | 13 constitutional tools |
+| arifOS health | `http://arifosmcp_server:8080/health` | — | JSON health endpoint |
+| arifOS MCP endpoint | `http://arifosmcp_server:8080/mcp` | — | Streamable-HTTP MCP |
+| Headless Browser | `http://headless_browser:3000` | — | Chromium DOM, Browserless API |
+| Qdrant | `http://qdrant_memory:6333` | — | Vector store, REST API |
+| Ollama | `http://ollama_engine:11434` | — | Local LLM (OpenAI-compat API) |
+| n8n | `http://arifos_n8n:5678` | `https://flow.arifosmcp.arif-fazil.com` | Workflow automation |
+| Prometheus | `http://arifos_prometheus:9090` | — | Metrics scraper |
+| Grafana | `http://arifos_grafana:3000` | `https://monitor.arifosmcp.arif-fazil.com` | Dashboards |
+| Webhook | — | `https://hook.arifosmcp.arif-fazil.com/hooks/deploy-arifos` | CI/CD trigger |
+| PostgreSQL | `postgresql://arifos-postgres:5432` | localhost:5432 (host-only) | Primary DB |
+| Redis | `redis://arifos-redis:6379` | localhost:6379 (host-only) | Cache + sessions |
 
 ---
 
-## Skills: openclaw-cli
+## 3. Mounted Paths
 
-Skill path (this repo): `skills/openclaw-cli/`
-arifOS MCP tool: `query_openclaw` (live after next container rebuild)
+| Container Path | Host Path | Contents |
+|----------------|-----------|----------|
+| `/mnt/arifos` | `/srv/arifOS` | Full arifOS repo (kernel, MCP, docker-compose) |
+| `/mnt/apex` | `/opt/arifos/APEX-THEORY` | APEX-THEORY (thermodynamic AI theory) |
+| `/var/run/docker.sock` | `/var/run/docker.sock` | Docker socket — full container management |
+| `/home/node/.openclaw` | `/opt/arifos/data/openclaw` | OpenClaw config, workspace, models |
 
-### What it exposes
+---
 
-| Tool ID | CLI command | Available via |
-|---------|-------------|---------------|
-| `openclaw_get_health` | `openclaw health --json` | OpenClaw skill (inside container) |
-| `openclaw_get_status` | `openclaw status --json --all` | OpenClaw skill (inside container) |
-| `openclaw_list_models` | `openclaw models list --json` | OpenClaw skill (inside container) |
-| `openclaw_get_models_status` | `openclaw models status --json` | OpenClaw skill (inside container) |
-| `openclaw_channels_status` | `openclaw channels status --probe --json` | OpenClaw skill (inside container) |
-| `openclaw_memory_search` | `openclaw memory search <query>` | OpenClaw skill (inside container) |
-| `openclaw_gateway_status` | `openclaw gateway status --json` | OpenClaw skill (inside container) |
+## 4. Environment API Keys
 
-### How to call via arifOS MCP
+| Env Var | Service | Use for |
+|---------|---------|---------|
+| `KIMI_API_KEY` | Moonshot Kimi K2.5 | Primary reasoning model |
+| `ANTHROPIC_API_KEY` | Claude Opus 4.6 | Constitutional analysis fallback |
+| `OPENROUTER_API_KEY` | OpenRouter | Multi-model routing fallback |
+| `VENICE_API_KEY` | Venice/DeepSeek | Coding fallback |
+| `FIRECRAWL_API_KEY` | Firecrawl | Web scraping (fc-733871f3...) |
+| `GH_TOKEN` | GitHub PAT | Repo reads, PR, issues |
+| `BROWSERLESS_URL` | `http://headless_browser:3000` | Browser automation |
+| `OLLAMA_URL` | `http://ollama_engine:11434` | Local LLM |
+| `REDIS_URL` | `redis://arifos-redis:6379` | Cache/session access |
+| `OPENCLAW_GATEWAY_TOKEN` | Gateway auth | Internal gateway API calls |
 
-```json
-{ "tool": "query_openclaw", "args": { "session_id": "<from anchor_session>", "action": "health" } }
-{ "tool": "query_openclaw", "args": { "session_id": "<from anchor_session>", "action": "status" } }
+---
+
+## 5. CLI Tools in PATH
+
+All in `/home/node/.local/bin/`:
+
+| Tool | Purpose |
+|------|---------|
+| `arifos` | Bridge to arifOS MCP (HTTP, 13 constitutional tools) |
+| `openclaw` | OpenClaw CLI (gateway, agents, models, memory) |
+| `docker` / via socket | Full container management |
+| `gh` | GitHub CLI |
+| `jq` | JSON processing |
+| `rg` | ripgrep fast search |
+| `ffmpeg` / `ffprobe` | Media processing |
+| `oracle-mcp` | MCP server bridge |
+| `mcporter` | MCP porter/proxy |
+| `nano-pdf` | PDF handling |
+| `xurl` | Enhanced URL fetcher |
+
+---
+
+## 6. arifOS CLI Bridge
+
+`arifos` CLI talks to `http://arifosmcp_server:8080` internally.
+
+```bash
+arifos health                    # → {"status":"healthy","tools_loaded":13,...}
+arifos list                      # → list all 13 MCP tools
+arifos anchor                    # → anchor_session (000 BOOTLOADER)
+arifos reason                    # → reason_mind (333 AGI reasoning)
+arifos memory "query text"       # → vector_memory (555 Qdrant search)
+arifos judge                     # → apex_judge (888 constitutional verdict)
+arifos seal                      # → seal_vault (999 VAULT999 ledger)
+arifos search "query"            # → search_reality (multi-source web)
+arifos audit                     # → audit_rules (floor audit)
 ```
 
-`action="health"` returns HTTP liveness + container state.
-`action="status"` adds config snapshot (model, bind, version — no secrets).
+---
 
-### Why two layers
+## 7. Docker Management via Socket
 
-OpenClaw's management API is WebSocket-only (custom protocol). The `query_openclaw`
-MCP tool uses the HTTP-observable subset (reachability + config file). Full CLI access
-(`models list`, `channels status`, etc.) requires the OpenClaw workspace skill running
-inside the container where the `openclaw` binary exists.
+```bash
+# Container overview
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-### 888_HOLD boundary
+# Service management
+docker compose -f /mnt/arifos/docker-compose.yml up -d <service>
+docker compose -f /mnt/arifos/docker-compose.yml restart <service>
+docker compose -f /mnt/arifos/docker-compose.yml logs <service> --tail 50
 
-Out of scope for this skill — require human confirmation before execution:
-`gateway restart`, `config set`, `cron add/rm`, `channels add/remove`, `reset`, `uninstall`.
+# Resource monitoring
+docker stats --no-stream
+docker system df
+
+# Execute inside containers
+docker exec arifosmcp_server python3 -c "..."
+docker exec arifos-postgres psql -U arifos -c "SELECT version();"
+docker exec arifos-redis redis-cli INFO server
+docker exec qdrant_memory curl -s http://localhost:6333/collections | jq
+```
 
 ---
 
-## Related Repos
+## 8. arifOS Repo (at /mnt/arifos)
 
-| Repo | Role | Use when |
-|------|------|----------|
-| [ariffazil/arifOS](https://github.com/ariffazil/arifOS) | Kernel, MCP server, Docker infra, VAULT999 | Server-side changes, floor logic, CI/CD |
-| [ariffazil/AGI_ASI_bot](https://github.com/ariffazil/AGI_ASI_bot) | Client configs (Claude, OpenCode, Kimi, Codex), Trinity persona, skills, hooks | Client-side MCP configs, skill authoring, hooks |
-| [ariffazil/APEX-THEORY](https://github.com/ariffazil/APEX-THEORY) | Thermodynamic theory of intelligence (Δ·Ω·Ψ) | Reference for physics analogies and constitutional theory |
+```
+/mnt/arifos/
+├── core/           # Kernel: floors, physics, organs, governance
+├── aaa_mcp/        # Transport: server.py (13 MCP tools), sessions
+├── aclip_cai/      # Intelligence: triad backends, embeddings, tools
+├── arifos_aaa_mcp/ # PyPI package entry point
+├── tests/          # 437+ tests (run: cd /mnt/arifos && pytest tests/ -v)
+├── docker-compose.yml  # Full stack compose
+├── .env            # Secrets (never commit; contains all API keys)
+└── CLAUDE.md       # Primary architecture + commands reference
+```
 
-**Client MCP configs live in `AGI_ASI_bot`.** For any new client tool (Claude Desktop, Cursor, Codex, etc.), add its MCP config there — not here and not in arifOS.
+---
 
-**This workspace (`openclaw-workspace`) is OpenClaw-specific.** It governs what the OpenClaw agent running on this VPS knows about itself. It is not the source of truth for kernel logic (that's arifOS) or client configs (that's AGI_ASI_bot).
+## 9. Web Search Capabilities
+
+`web_search` supports:
+- Perplexity (if PPLX_API_KEY set — check env)
+- Brave (if BRAVE_API_KEY set — check env)
+- Kimi (uses KIMI_API_KEY)
+
+`web_fetch` + `browser` tool:
+- Jina reader for clean markdown extraction
+- Browser tool → headless_browser:3000 → full Chromium render
+- Firecrawl for deep crawls (FIRECRAWL_API_KEY available)
+
+---
+
+## 10. Skills Available
+
+| Skill | Trigger patterns | What it does |
+|-------|-----------------|--------------|
+| `arifos-status` | "status", "check health" | arifOS + Docker status check |
+| `list-models` | "list models", "models" | Available AI models |
+| `memory-search` | "search memory" | Search workspace memory |
+| `restart-gateway` | "restart gateway" | Restart openclaw gateway |
+| `vps-docker` | "docker", "containers" | Full Docker status + management |
+| `arifos-mcp-call` | "call arifos", "mcp" | Direct arifOS MCP tool invocation |
