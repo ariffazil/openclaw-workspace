@@ -28,7 +28,7 @@ Network: `arifos_trinity` (10.0.10.0/24)
 
 | Service | Internal URL | External URL | Notes |
 |---------|-------------|--------------|-------|
-| arifOS MCP | `http://arifosmcp_server:8080` | `https://arifosmcp.arif-fazil.com` | 13 constitutional tools |
+| arifOS MCP | `http://arifosmcp_server:8080` | `https://arifosmcp.arif-fazil.com` | 7+1 unified kernel tools |
 | arifOS health | `http://arifosmcp_server:8080/health` | — | JSON health endpoint |
 | arifOS MCP endpoint | `http://arifosmcp_server:8080/mcp` | — | Streamable-HTTP MCP |
 | Headless Browser | `http://headless_browser:3000` | — | Chromium DOM, Browserless API |
@@ -77,7 +77,7 @@ All in `/home/node/.local/bin/`:
 
 | Tool | Purpose |
 |------|---------|
-| `arifos` | Bridge to arifOS MCP (HTTP, 13 constitutional tools) |
+| `arifos` | Bridge to arifOS MCP (HTTP, 7+1 unified kernel tools) |
 | `openclaw` | OpenClaw CLI (gateway, agents, models, memory) |
 | `docker` / via socket | Full container management |
 | `gh` | GitHub CLI |
@@ -96,15 +96,47 @@ All in `/home/node/.local/bin/`:
 `arifos` CLI talks to `http://arifosmcp_server:8080` internally.
 
 ```bash
-arifos health                    # → {"status":"healthy","tools_loaded":13,...}
-arifos list                      # → list all 13 MCP tools
-arifos anchor                    # → anchor_session (000 BOOTLOADER)
-arifos reason                    # → reason_mind (333 AGI reasoning)
-arifos memory "query text"       # → vector_memory (555 Qdrant search)
-arifos judge                     # → apex_judge (888 constitutional verdict)
-arifos seal                      # → seal_vault (999 VAULT999 ledger)
+# Health and discovery
+arifos health                    # → {"status":"healthy","tools_loaded":7,...}
+arifos list                      # → list all 7+1 MCP tools
+
+# Unified kernel (runs full pipeline internally)
+arifos anchor                    # → arifOS.kernel with anchor stage
+arifos reason                    # → arifOS.kernel with reason stage
+arifos judge                     # → arifOS.kernel with judge stage
+arifos seal                      # → arifOS.kernel with seal stage
+
+# Supporting tools
+arifos memory "query text"       # → session_memory (semantic search)
 arifos search "query"            # → search_reality (multi-source web)
 arifos audit                     # → audit_rules (floor audit)
+```
+
+### Direct arifOS.kernel Usage
+
+For full control over the constitutional pipeline:
+
+```bash
+curl -s -X POST http://arifosmcp_server:8080/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "name": "arifOS.kernel",
+      "arguments": {
+        "query": "Your task here",
+        "actor_id": "arif",
+        "risk_tier": "medium",
+        "use_memory": true,
+        "use_heart": true,
+        "use_critique": true,
+        "allow_execution": false,
+        "dry_run": false
+      }
+    }
+  }'
 ```
 
 ---
@@ -138,7 +170,7 @@ docker exec qdrant_memory curl -s http://localhost:6333/collections | jq
 ```
 /mnt/arifos/
 ├── core/           # Kernel: floors, physics, organs, governance
-├── aaa_mcp/        # Transport: server.py (13 MCP tools), sessions
+├── aaa_mcp/        # Transport: server.py (7+1 unified MCP tools), sessions
 ├── aclip_cai/      # Intelligence: triad backends, embeddings, tools
 ├── arifos_aaa_mcp/ # PyPI package entry point
 ├── tests/          # 437+ tests (run: cd /mnt/arifos && pytest tests/ -v)

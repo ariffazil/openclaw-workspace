@@ -64,7 +64,7 @@ Hold ONLY for actions that are:
 ### Running Containers (Docker network: arifos_trinity / 10.0.10.0/24)
 | Container | DNS Alias | Port | Role |
 |-----------|-----------|------|------|
-| arifosmcp_server | arifosmcp_server | 8080 | arifOS MCP kernel (13 tools) |
+| arifosmcp_server | arifosmcp_server | 8080 | arifOS MCP kernel (7+1 unified tools) |
 | openclaw_gateway | openclaw | 18789 | You (this container) |
 | traefik_router | traefik_router | 80/443 | Reverse proxy / TLS |
 | headless_browser | headless_browser | 3000 | Chromium DOM extraction |
@@ -107,12 +107,32 @@ exec: cat /mnt/arifos/docker-compose.yml
 ### arifOS MCP Bridge (constitutional governance)
 ```bash
 # Use the arifos CLI for constitutional decisions
-exec: arifos health
-exec: arifos anchor
-exec: arifos reason
-exec: arifos judge
-exec: arifos seal
-exec: arifos list    # see all 13 tools
+exec: arifos health          # Check kernel health
+exec: arifos list            # List all 7+1 tools
+exec: arifos anchor          # Boot a constitutional session
+exec: arifos reason          # Run AGI cognition
+exec: arifos judge           # Get final constitutional verdict
+exec: arifos seal            # Seal to VAULT999 ledger
+exec: arifos search "query"  # Multi-source web search
+exec: arifos audit           # Floor audit (F1-F13)
+exec: arifos memory "query"  # Semantic memory search
+
+# Direct HTTP call for arifOS.kernel (unified pipeline)
+exec: curl -s -X POST http://arifosmcp_server:8080/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "name": "arifOS.kernel",
+      "arguments": {
+        "query": "Your task here",
+        "actor_id": "arif",
+        "risk_tier": "medium"
+      }
+    }
+  }'
 ```
 
 Or call HTTP directly (internal):
@@ -152,25 +172,59 @@ exec: curl http://qdrant_memory:6333/collections/arifos_constitutional/points/co
 
 ---
 
-## 5. arifOS MCP — 13 Constitutional Tools
+## 5. arifOS MCP — 7+1 Unified Kernel Tools
 
-The arifOS kernel enforces F1-F13 floors on every verdict.
+The arifOS kernel enforces F1-F13 floors on every verdict. **Architecture:** Unified `arifOS.kernel` runs the full constitutional pipeline internally. Supporting tools handle evidence, memory, and audit.
+
+### Primary Tool: arifOS.kernel
+
+| Tool | Description |
+|------|-------------|
+| `arifOS.kernel` | **Unified constitutional intelligence kernel.** Runs the full F1-F13 pipeline internally: anchor → reason → memory/heart → critique → forge → judge → seal. Use this as the primary entrypoint for all non-trivial intelligence tasks. |
+
+**Key parameters:**
+- `query` (required) — The task or question
+- `context` — Additional context
+- `risk_tier` — low/medium/high (default: medium)
+- `actor_id` — Who is invoking (default: anonymous)
+- `use_memory` — Enable memory stage (default: true)
+- `use_heart` — Enable empathy stage (default: true)
+- `use_critique` — Enable self-critique (default: true)
+- `allow_execution` — Permit tool execution (default: false)
+- `dry_run` — Simulate without executing (default: false)
+
+### Supporting Tools (Evidence → Memory → Audit)
 
 | Tool | Stage | Description |
 |------|-------|-------------|
-| `anchor_session` | 000 | Boot a constitutional session |
-| `reason_mind` | 333 | AGI cognition + reasoning |
-| `vector_memory` | 555 | Semantic search (Qdrant + GDrive) |
-| `simulate_heart` | 555 | ASI empathy simulation |
-| `critique_thought` | 666 | Self-critique against floors |
-| `eureka_forge` | 777 | Synthesis + solution forge |
-| `apex_judge` | 888 | Final constitutional verdict |
-| `seal_vault` | 999 | Seal to VAULT999 ledger |
-| `search_reality` | READ | Multi-source web search |
-| `fetch_content` | READ | URL content extraction |
-| `inspect_file` | READ | File inspection |
-| `audit_rules` | READ | Floor audit |
-| `check_vital` | READ | System vitals |
+| `search_reality` | 111_SENSE | Multi-source web search |
+| `ingest_evidence` | 222_REALITY | Fetch/extract evidence from URLs/files |
+| `session_memory` | — | Store, retrieve, or forget session context |
+| `audit_rules` | 333_MIND | Inspect the 13 constitutional floors |
+| `check_vital` | 000_INIT | System health snapshot |
+| `open_apex_dashboard` | — | Open APEX Sovereign Dashboard |
+
+### Legacy Alias
+
+| Tool | Description |
+|------|-------------|
+| `metabolic_loop_router` | ⚠️ Legacy alias. Use `arifOS.kernel` instead. |
+
+### Internal Pipeline Stages (within arifOS.kernel)
+
+The kernel runs these stages sequentially when processing a query:
+
+| Stage | Name | Function |
+|-------|------|----------|
+| 000 | INIT | Session anchoring and auth |
+| 111 | SENSE | Evidence gathering (via search_reality) |
+| 222 | REALITY | Evidence ingestion (via ingest_evidence) |
+| 333 | MIND | Constitutional reasoning |
+| 555 | MEMORY/HEART | Semantic search + empathy simulation |
+| 666 | CRITIQUE | Self-critique against F1-F13 |
+| 777 | FORGE | Synthesis and solution generation |
+| 888 | JUDGE | Final constitutional verdict |
+| 999 | VAULT | Seal to persistent ledger |
 
 ---
 
