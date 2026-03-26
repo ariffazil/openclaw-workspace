@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cara Guna SilverBullet — Panduan Arif</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #eaeaea;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 { color: #e94560; text-align: center; margin-bottom: 10px; }
+        h2 { color: #00c896; margin: 25px 0 10px; font-size: 1.1rem; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 20px; }
+        .box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .box h3 { color: #ffd700; margin-bottom: 8px; font-size: 1rem; }
+        .step {
+            background: rgba(0,200,150,0.1);
+            border-left: 3px solid #00c896;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .folder {
+            background: rgba(255,215,0,0.1);
+            border-left: 3px solid #ffd700;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tip {
+            background: rgba(233,69,96,0.1);
+            border-left: 3px solid #e94560;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        a { color: #00c896; }
+    </style>
+</head>
+<body>
+    <h1>📝 Cara Guna SilverBullet</h1>
+    <p class="subtitle">Panduan untuk Arif (Human Edition)</p>
+
+    <div class="box">
+        <h3>🔗 Akses</h3>
+        <p><strong>URL:</strong> <a href="https://notes.arif-fazil.com">https://notes.arif-fazil.com</a></p>
+        <p><strong>Login:</strong> <code>arif</code> / <code>arifos2026</code></p>
+    </div>
+
+    <h2>📱 Setup Mobile (Penting!)</h2>
+    <div class="step">
+        <strong>Step 1:</strong> Buka link atas dalam Safari/Chrome
+    </div>
+    <div class="step">
+        <strong>Step 2:</strong> Tap "Share" button (icon kotak dengan arrow)
+    </div>
+    <div class="step">
+        <strong>Step 3:</strong> Pilih "Add to Home Screen" / "Tambah ke Skrin Utama"
+    </div>
+    <div class="step">
+        <strong>Step 4:</strong> Now ada icon SilverBullet kat home screen — buka macam app
+    </div>
+
+    <h2>📁 Folders (Macam Filing Cabinet)</h2>
+    
+    <div class="folder">
+        <strong>📥 INBOX/</strong><br>
+        AI agents drop outputs here. You baca, approve, move ke projects.
+    </div>
+    
+    <div class="folder">
+        <strong>📅 DAILY/</strong><br>
+        Nota harian. Auto-created: <code>2026-03-26.md</code>. Jurnal, todo, thoughts.
+    </div>
+    
+    <div class="folder">
+        <strong>📂 PROJECTS/</strong><br>
+        Kerja aktif. Carbon credits, Izzu collab, trading signals, etc.
+    </div>
+    
+    <div class="folder">
+        <strong>📚 REFERENCE/</strong><br>
+        Specs, research, docs. Baca-only mostly.
+    </div>
+    
+    <div class="folder">
+        <strong>🗄️ ARCHIVE/</strong><br>
+        Sealed decisions. VAULT999 style — once archived, jangan edit.
+    </div>
+
+    <h2>✏️ Basic Editing</h2>
+    <div class="box">
+        <h3>Click file → Edit → Save</h3>
+        <p>SilverBullet guna <strong>Markdown</strong> (simple formatting):</p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+            <li><code># Heading</code> — Tajuk besar</li>
+            <li><code>## Subheading</code> — Tajuk kecil</li>
+            <li><code>- list item</code> — Bullet point</li>
+            <li><code>**bold**</code> — <strong>bold</strong></li>
+            <li><code>[link](url)</code> — Link</li>
+        </ul>
+    </div>
+
+    <h2>🤖 AI Agent Integration</h2>
+    <div class="box">
+        <h3>How Agents Write to Your Notes</h3>
+        <p><strong>Read project:</strong></p>
+        <code>cat /mnt/arifos/notes/projects/carbon-mrv.md</code>
+        
+        <p style="margin-top: 10px;"><strong>Write to inbox:</strong></p>
+        <code>echo "## Agent analysis" >> /mnt/arifos/notes/inbox/2026-03-26-agent.md</code>
+        
+        <p style="margin-top: 10px;"><strong>Update project:</strong></p>
+        <code>echo "New insight" >> /mnt/arifos/notes/projects/active.md</code>
+    </div>
+
+    <h2>🔍 Search & Navigate</h2>
+    <div class="tip">
+        <strong>Cmd+K</strong> (Mac) atau <strong>Ctrl+K</strong> (Windows) — Quick open file<br>
+        <strong>Cmd+Shift+F</strong> — Search semua notes<br>
+        Sidebar kiri — Browse folders
+    </div>
+
+    <h2>💡 Tips</h2>
+    <div class="box">
+        <ul style="margin-left: 20px;">
+            <li>Semua notes auto-save. Tak payah Ctrl+S.</li>
+            <li>Git backup automatic — kalau ter-delete, boleh recover.</li>
+            <li>Guna mobile PWA — faster than browser.</li>
+            <li>Start with daily/ folder — jot thoughts daily.</li>
+        </ul>
+    </div>
+
+    <div class="tip">
+        <strong>Need Help?</strong> Tanya apa-apa kat Telegram @arifOS_bot
+    </div>
+
+    <p style="text-align: center; margin-top: 30px; color: #666; font-size: 0.8rem;">
+        🔐 DITEMPA, BUKAN DIBERI
+    </p>
+</body>
+</html>

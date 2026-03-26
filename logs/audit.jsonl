@@ -6,3 +6,4 @@
 {"ts":"2026-03-23T17:00:00Z","event":"daily_ritual","phase":"complete","backup_status":"failed","reflection_status":"completed","carry_forward_items":4,"agent":"arifOS_bot"}
 {"ts":"2026-03-24T17:03:17Z","event":"backup_skipped","reason":"no_changes","agent":"arifOS_bot"}
 {"ts":"2026-03-24T17:03:17Z","event":"daily_ritual_complete","phases":["reflection","backup"],"backup_status":"skipped_no_changes","agent":"arifOS_bot","cron_job":"arifos-daily-backup-0001"}
+{"timestamp": "2026-03-25T17:00:00Z", "event": "daily_ritual", "cron_job": "arifos-daily-backup-0001", "backup_status": "failure", "reason": "git push permission denied (publickey)", "agent": "arifOS_bot"}

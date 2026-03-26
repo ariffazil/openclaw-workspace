@@ -1,0 +1,133 @@
+{
+  "version": "2026.03.26-MISKIN-OPTIMIZED",
+  "motto": "Ditempa Bukan Diberi — Forged, Not Given",
+  "authority": "F13_SOVEREIGN_ARIF",
+  "constraint": "MISKIN (cost optimization)",
+  
+  "stages": {
+    "111_SENSE": {
+      "primary": "gemini-cli",
+      "backup": "claude-code",
+      "cost_per_m_tokens": 1.5,
+      "description": "Evidence gathering, web search, F2 Truth verification"
+    },
+    "222_REALITY": {
+      "primary": "claude-code",
+      "backup": "gemini-cli",
+      "cost_per_m_tokens": 9.0,
+      "description": "Complex refactoring, architecture design",
+      "requires_f13_approval": true
+    },
+    "444_RESEARCH": {
+      "primary": "kimi",
+      "backup": "claude-code",
+      "cost_per_m_tokens": 0.75,
+      "description": "200K+ log analysis, massive context"
+    },
+    "666_CRITIQUE": {
+      "primary": "agent-zero",
+      "backup": "claude-code",
+      "cost_per_m_tokens": 0.0,
+      "description": "Self-check, F3 Tri-Witness validation"
+    },
+    "777_FORGE": {
+      "primary": "opencode",
+      "backup": "agent-zero",
+      "cost_per_m_tokens": 0.0,
+      "description": "Shell scripts, git ops, routine automation"
+    }
+  },
+  
+  "agents": {
+    "agent-zero": {
+      "type": "docker",
+      "endpoint": "http://127.0.0.1:18001",
+      "cost": "free",
+      "context_window": 32000,
+      "strengths": ["multi-tool orchestration", "memory persistence", "web browsing"]
+    },
+    "claude-code": {
+      "type": "cli",
+      "command": "/usr/local/bin/claude",
+      "cost": "expensive",
+      "cost_per_m_tokens": 9.0,
+      "context_window": 200000,
+      "strengths": ["deep reasoning", "complex refactoring", "architecture design"]
+    },
+    "gemini-cli": {
+      "type": "cli",
+      "command": "/usr/local/bin/gemini",
+      "cost": "moderate",
+      "cost_per_m_tokens": 1.5,
+      "context_window": 1000000,
+      "strengths": ["web search", "fast iteration", "doc ingestion", "F2 verification"]
+    },
+    "kimi": {
+      "type": "cli",
+      "command": "kimi",
+      "cost": "cheap",
+      "cost_per_m_tokens": 0.75,
+      "context_window": 200000,
+      "strengths": ["200K context", "log analysis", "cheapest paid tier"],
+      "setup_required": "npm install -g @moonshot-ai/kimi-cli && kimi config set apiKey $KIMI_API_KEY"
+    },
+    "opencode": {
+      "type": "cli",
+      "command": "/usr/local/bin/opencode",
+      "cost": "free",
+      "cost_per_m_tokens": 0.0,
+      "context_window": 32000,
+      "strengths": ["shell scripting", "git ops", "routine tasks", "free tier"]
+    }
+  },
+  
+  "tri_witness_protocol": {
+    "enabled": true,
+    "threshold": 0.95,
+    "witnesses": {
+      "W1_theory": "claude-code",
+      "W2_law": "agent-zero",
+      "W3_reality": "gemini-cli"
+    },
+    "calculation": "W_3 = (W1 × W2 × W3)^(1/3) >= 0.95",
+    "high_stakes_tasks": [
+      "deployment",
+      "database migration",
+      "api key rotation",
+      "firewall change",
+      "cost > $5.00"
+    ]
+  },
+  
+  "cost_optimization": {
+    "enabled": true,
+    "monthly_budget_usd": 50.0,
+    "daily_budget_usd": 5.0,
+    "routing_priority": [
+      "opencode",
+      "agent-zero",
+      "kimi",
+      "gemini-cli",
+      "claude-code"
+    ],
+    "guardrails": {
+      "max_single_task_cost": 10.0,
+      "max_daily_cost": 5.0,
+      "max_monthly_cost": 50.0,
+      "on_budget_exceeded": "SWITCH_TO_FREE_TIER",
+      "on_high_cost_task": "888_HOLD"
+    }
+  },
+  
+  "vault999_integration": {
+    "enabled": true,
+    "ledger_path": "/mnt/arifos/VAULT999",
+    "seal_on": [
+      "F13 authorization",
+      "deployment completion",
+      "G-Score >= 0.80",
+      "cost > $5.00"
+    ],
+    "unified_audit": "Regardless of which agent performed the work, F13 authorization seals it to VAULT999 with full provenance."
+  }
+}
