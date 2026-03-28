@@ -115,7 +115,7 @@ jobs:
 
       - name: Connect to Tailscale
         if: ${{ secrets.TS_AUTHKEY != '' }}
-        uses: tailscale/github-action@v3
+        uses: tailscale/github-action@v4
         with:
           authkey: ${{ secrets.TS_AUTHKEY }}
           hostname: gha-arifos-deploy
