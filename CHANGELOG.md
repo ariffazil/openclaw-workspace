@@ -1,4 +1,14 @@
-# arifOS / AAA MCP — Changelog (v55.5.0 → v60.1-beta)
+# arifOS / AAA MCP — Changelog (v55.4.0 → v60.1-beta)
+
+## [v2026.05.22-pre] — 2026-05-22
+
+### Birthday Pre-release — Divergence HOLD
+
+- Added birthday pre-release notes for the 2026-05-22 AAA audit branch.
+- Recorded that local AAA history remains divergent from `origin/main`.
+- Preserved reconciliation evidence without pushing the risky divergent local branch.
+- Clean audit branch passed AAA Wajib Secret Gate and repo guard.
+- Main remains HOLD: no merge, no rebase, no force-push.
 
 > This log is for **reflection and lesson learned**, not just release notes.
 > Scope: from `v55.5.0` (HARDENED) up to current `main` (v60.x FORGE + MCP wiring).
